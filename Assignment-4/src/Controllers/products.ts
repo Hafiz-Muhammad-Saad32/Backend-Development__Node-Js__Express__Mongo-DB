@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import userModel from '../Models/productModel'
+import ProductModel from '../Models/productModel'
 
 interface reqBody {
     title: string,
@@ -29,8 +29,8 @@ export const createProduct = async (req: Request<{}, {}, reqBody>, res: Response
             })
         }
 
-        const user = new userModel(req.body);
-        const newProduct = await user.save();
+        const product = new ProductModel(req.body);
+        const newProduct = await product.save();
 
         res.status(201).json({
             success: true,
@@ -48,7 +48,7 @@ export const createProduct = async (req: Request<{}, {}, reqBody>, res: Response
 
 export const getAllProducts = async (req: Request<{ id: string }>, res: Response) => {
     try {
-        const products = await userModel.find();
+        const products = await ProductModel.find();
 
         if (products.length === 0) {
             return res.status(404).json({
@@ -74,7 +74,7 @@ export const getAllProducts = async (req: Request<{ id: string }>, res: Response
 export const getProductById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const product = await userModel.findById({ _id: id });
+        const product = await ProductModel.findById({ _id: id });
 
         if (!product) {
             return res.status(404).json({
@@ -100,7 +100,7 @@ export const getProductById = async (req: Request, res: Response) => {
 // Update Product by ID for patch request
 export const updateProductById = async (req: Request<{ id: string }, {}, any>, res: Response) => {
     try {
-        const isProductExist = await userModel.findOne({ _id: req.params.id });
+        const isProductExist = await ProductModel.findOne({ _id: req.params.id });
         if (!isProductExist) {
             return res.status(404).json({
                 success: false,
@@ -110,7 +110,7 @@ export const updateProductById = async (req: Request<{ id: string }, {}, any>, r
 
         const payload: any = req.body;
 
-        const updatedProduct = await userModel.findByIdAndUpdate({ _id: req.params.id }, payload, {
+        const updatedProduct = await ProductModel.findByIdAndUpdate({ _id: req.params.id }, payload, {
         new:true, runValidators: true});
 
        res.status(200).json({
@@ -130,7 +130,7 @@ export const updateProductById = async (req: Request<{ id: string }, {}, any>, r
 export const deleteProductById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const isProductExist = await userModel.findById({ _id: id });
+        const isProductExist = await ProductModel.findById({ _id: id });
 
         if (!isProductExist) {
             return res.status(404).json({
@@ -139,7 +139,7 @@ export const deleteProductById = async (req: Request, res: Response) => {
             })
         }
 
-        const deletedProduct = await userModel.findByIdAndDelete({ _id: id });
+        const deletedProduct = await ProductModel.findByIdAndDelete({ _id: id });
         res.status(200).json({
             success: true,
             message: "product deleted successfully",
